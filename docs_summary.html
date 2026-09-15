@@ -1,0 +1,416 @@
+<title>ETNS TODO 배포 연결도</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg: #0e2a47;
+    --panel: #123a61;
+    --panel-2: #0b233c;
+    --line: #3e6c97;
+    --line-soft: rgba(159,185,214,0.22);
+    --ink: #eaf2fa;
+    --muted: #9fb9d6;
+    --cyan: #6fd3f2;
+    --good: #59d6a6;
+    --warn: #f0b94a;
+    --font-sans: 'IBM Plex Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    --font-mono: 'IBM Plex Mono', 'Consolas', 'D2Coding', monospace;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--line-soft) 1px, transparent 1px) 0 0/40px 40px,
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px) 0 0/40px 40px,
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    padding: 40px 20px 72px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a{ color: var(--cyan); }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+
+  .sheet{
+    max-width: 900px;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    background: rgba(18,58,97,0.35);
+    backdrop-filter: blur(2px);
+  }
+
+  /* ---------- title block ---------- */
+  .titleblock{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 28px 28px 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .titleblock h1{
+    margin: 6px 0 8px;
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .eyebrow{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--cyan);
+    text-transform: uppercase;
+  }
+  .titleblock p{ margin:0; color: var(--muted); max-width: 60ch; line-height:1.6; }
+
+  .stamp{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    border: 1px solid var(--line);
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 4px 14px;
+    height: fit-content;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .stamp dt{ color: var(--muted); }
+  .stamp dd{ margin:0; color: var(--ink); text-align:right; }
+
+  /* ---------- generic section ---------- */
+  section{ padding: 32px 28px; border-bottom: 1px solid var(--line); }
+  section:last-of-type{ border-bottom:none; }
+  section > .eyebrow{ display:block; margin-bottom: 6px; }
+  section h2{
+    margin: 0 0 6px;
+    font-size: 21px;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+  section > .lede{ margin: 0 0 22px; color: var(--muted); max-width: 68ch; line-height:1.7; }
+
+  /* ---------- diagram ---------- */
+  figure{ margin:0; }
+  figure svg{ width:100%; height:auto; display:block; }
+  figcaption{
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .legend{
+    display:flex; gap: 22px; flex-wrap:wrap;
+    margin-top: 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .legend span{ display:inline-flex; align-items:center; gap:8px; }
+  .swatch{ width:22px; height:0; border-top-width:2px; border-top-style:solid; display:inline-block; }
+
+  /* ---------- revision log ---------- */
+  .revlog{ width:100%; border-collapse: collapse; font-size: 14px; }
+  .revlog th{
+    text-align:left; font-family: var(--font-mono); font-size:11px; letter-spacing:0.08em;
+    color: var(--muted); text-transform:uppercase; padding: 0 12px 10px 0; border-bottom:1px solid var(--line);
+  }
+  .revlog td{ padding: 12px 12px 12px 0; border-bottom: 1px solid var(--line-soft); vertical-align:top; }
+  .revlog tr:last-child td{ border-bottom:none; }
+  .revlog .rev{ font-family: var(--font-mono); color: var(--cyan); white-space:nowrap; }
+  .revlog .hash{ font-family: var(--font-mono); color: var(--muted); white-space:nowrap; }
+  .revlog .desc{ color: var(--ink); line-height:1.6; }
+
+  /* ---------- redline corrections ---------- */
+  .redline{
+    border-left: 3px solid var(--warn);
+    background: linear-gradient(90deg, rgba(240,185,74,0.08), transparent 60%);
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    border-radius: 0 4px 4px 0;
+  }
+  .redline:last-child{ margin-bottom:0; }
+  .redline .tag{
+    font-family: var(--font-mono); font-size:11px; letter-spacing:0.08em;
+    color: var(--warn); text-transform:uppercase; display:block; margin-bottom:6px;
+  }
+  .redline p{ margin:0; line-height:1.65; color: var(--ink); }
+  .redline .fix del{ color: var(--muted); text-decoration: line-through; text-decoration-color: var(--warn); }
+  .redline .fix ins{ color: var(--good); text-decoration:none; font-family: var(--font-mono); }
+
+  /* ---------- reference table ---------- */
+  .reftable{ width:100%; border-collapse:collapse; font-size:14px; }
+  .reftable th{
+    text-align:left; font-family: var(--font-mono); font-size:11px; letter-spacing:0.08em;
+    color: var(--muted); text-transform:uppercase; padding: 0 14px 10px 0; border-bottom:1px solid var(--line);
+  }
+  .reftable td{ padding: 13px 14px 13px 0; border-bottom:1px solid var(--line-soft); line-height:1.5; }
+  .reftable tr:last-child td{ border-bottom:none; }
+  .reftable .svc{ font-weight:600; white-space:nowrap; }
+  .reftable code{
+    font-family: var(--font-mono); font-size:13px; color: var(--cyan);
+    background: var(--panel-2); padding: 2px 6px; border-radius:3px; word-break: break-all;
+  }
+  .reftable .note{ color: var(--muted); font-size:13px; }
+
+  /* ---------- callout ---------- */
+  .callout{
+    display:flex; gap:12px; align-items:flex-start;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 16px 18px;
+    border-radius: 4px;
+    margin-top: 18px;
+  }
+  .callout .mark{
+    font-family: var(--font-mono); font-weight:600; color: var(--warn);
+    border: 1px solid var(--warn); border-radius:50%;
+    width:22px; height:22px; min-width:22px; display:flex; align-items:center; justify-content:center; font-size:13px;
+  }
+  .callout p{ margin:0; line-height:1.7; color: var(--muted); font-size:14px; }
+  .callout strong{ color: var(--ink); }
+
+  /* ---------- steps ---------- */
+  .steps{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px; }
+  .steps li{ display:flex; gap:14px; align-items:baseline; line-height:1.65; }
+  .steps .n{
+    font-family: var(--font-mono); color: var(--cyan); font-size:13px;
+    min-width: 20px;
+  }
+  .steps code{ font-family: var(--font-mono); font-size:13px; color: var(--cyan); background: var(--panel-2); padding:2px 6px; border-radius:3px; }
+
+  /* ---------- footer stamp ---------- */
+  footer{
+    padding: 22px 28px;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    font-family: var(--font-mono); font-size:12px; color: var(--muted);
+  }
+  footer .status{ color: var(--good); }
+
+  @media (max-width:640px){
+    .titleblock{ flex-direction:column; }
+    .stamp{ grid-template-columns: auto 1fr; white-space:normal; }
+    section{ padding: 26px 18px; }
+    .titleblock{ padding: 22px 18px; }
+    footer{ padding: 18px; }
+    .revlog, .reftable{ display:block; overflow-x:auto; }
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    .flow-path{ stroke-dasharray: 6 5; animation: dash 1.6s linear infinite; }
+    .flow-path.solidline{ stroke-dasharray:none; animation:none; }
+  }
+  @keyframes dash{ to{ stroke-dashoffset: -22; } }
+</style>
+
+<div class="sheet">
+
+  <div class="titleblock">
+    <div>
+      <span class="eyebrow">배포 구성 기록 · DWG NO. ETNS-2026-0915</span>
+      <h1>ETNS TODO 배포 연결도</h1>
+      <p>할 일 관리 웹앱 하나를 세 개의 서비스(GitHub·Vercel·Supabase)에 연결해 실제로 서비스되는 상태로 만든 작업을 정리한 기록입니다. 나중에 다시 볼 때, 무엇이 어디에 연결되어 있고 왜 그렇게 했는지 바로 알 수 있도록 남겨둡니다.</p>
+    </div>
+    <dl class="stamp">
+      <dt>도면명</dt><dd>ETNS TODO 배포 연결도</dd>
+      <dt>작성일</dt><dd>2026-09-15</dd>
+      <dt>축척</dt><dd>N/A (개념도)</dd>
+      <dt>작성</dt><dd>Claude</dd>
+      <dt>상태</dt><dd>운영 중</dd>
+    </dl>
+  </div>
+
+  <section>
+    <span class="eyebrow">Overview</span>
+    <h2>전체 구성 한눈에 보기</h2>
+    <p class="lede">아래쪽 실선은 "코드를 고칠 때" 한 번씩만 흐르는 배포 흐름이고, 위쪽 점선은 "누군가 사이트에 접속할 때"마다 매번 흐르는 실행 흐름입니다. 이 둘을 구분해두면 문제가 생겼을 때 어느 쪽을 봐야 할지 바로 알 수 있습니다.</p>
+
+    <figure>
+      <svg viewBox="0 0 900 400" role="img" aria-label="내 PC에서 GitHub로 코드를 올리면 Vercel이 자동 배포하고, 사용자 브라우저가 Vercel에 접속하면 Vercel이 Supabase에서 할 일 데이터를 읽고 쓴다는 것을 보여주는 구성도">
+        <defs>
+          <marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#6fd3f2"/>
+          </marker>
+          <marker id="arrow-green-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#59d6a6"/>
+          </marker>
+          <marker id="arrow-green-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#59d6a6"/>
+          </marker>
+        </defs>
+
+        <!-- grid baseline (subtle) -->
+        <line x1="0" y1="230" x2="900" y2="230" stroke="#3e6c97" stroke-opacity="0.25" stroke-width="1"/>
+
+        <!-- nodes: top row -->
+        <g font-family="IBM Plex Sans KR, sans-serif">
+          <rect x="40" y="30" width="180" height="64" rx="4" fill="#0b233c" stroke="#3e6c97"/>
+          <text x="130" y="56" text-anchor="middle" font-size="13" font-weight="600" fill="#eaf2fa">내 PC (로컬)</text>
+          <text x="130" y="76" text-anchor="middle" font-size="11" fill="#9fb9d6" font-family="IBM Plex Mono, monospace">ETNS_TODO_APP</text>
+
+          <rect x="680" y="30" width="180" height="64" rx="4" fill="#0b233c" stroke="#3e6c97"/>
+          <text x="770" y="56" text-anchor="middle" font-size="13" font-weight="600" fill="#eaf2fa">사용자 브라우저</text>
+          <text x="770" y="76" text-anchor="middle" font-size="11" fill="#9fb9d6" font-family="IBM Plex Mono, monospace">누구나 접속 가능</text>
+
+          <!-- nodes: bottom row -->
+          <rect x="30" y="230" width="200" height="76" rx="4" fill="#123a61" stroke="#6fd3f2" stroke-width="1.5"/>
+          <text x="130" y="260" text-anchor="middle" font-size="13" font-weight="700" fill="#eaf2fa">GitHub</text>
+          <text x="130" y="280" text-anchor="middle" font-size="11" fill="#9fb9d6" font-family="IBM Plex Mono, monospace">20260915_ETNS_G</text>
+          <text x="130" y="296" text-anchor="middle" font-size="10.5" fill="#9fb9d6">소스 코드 보관</text>
+
+          <rect x="355" y="230" width="190" height="76" rx="4" fill="#123a61" stroke="#6fd3f2" stroke-width="1.5"/>
+          <text x="450" y="260" text-anchor="middle" font-size="13" font-weight="700" fill="#eaf2fa">Vercel</text>
+          <text x="450" y="280" text-anchor="middle" font-size="11" fill="#9fb9d6" font-family="IBM Plex Mono, monospace">20260915_etns_v</text>
+          <text x="450" y="296" text-anchor="middle" font-size="10.5" fill="#9fb9d6">웹사이트 호스팅</text>
+
+          <rect x="670" y="230" width="200" height="76" rx="4" fill="#123a61" stroke="#59d6a6" stroke-width="1.5"/>
+          <text x="770" y="260" text-anchor="middle" font-size="13" font-weight="700" fill="#eaf2fa">Supabase</text>
+          <text x="770" y="280" text-anchor="middle" font-size="11" fill="#9fb9d6" font-family="IBM Plex Mono, monospace">20260915_ETNS_S</text>
+          <text x="770" y="296" text-anchor="middle" font-size="10.5" fill="#9fb9d6">할 일 데이터 저장(DB)</text>
+        </g>
+
+        <!-- flow 1: PC -> GitHub (deploy, solid cyan) -->
+        <path class="flow-path solidline" d="M120,94 L128,230" fill="none" stroke="#6fd3f2" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+        <text x="70" y="165" font-size="11.5" fill="#6fd3f2" font-family="IBM Plex Mono, monospace">① git push</text>
+
+        <!-- flow 2: GitHub -> Vercel (deploy, solid cyan) -->
+        <path class="flow-path solidline" d="M230,266 L353,266" fill="none" stroke="#6fd3f2" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+        <text x="240" y="252" font-size="11.5" fill="#6fd3f2" font-family="IBM Plex Mono, monospace">② 자동 배포</text>
+
+        <!-- flow 3: Browser <-> Vercel (runtime, dashed green) -->
+        <path class="flow-path" d="M745,94 L520,230" fill="none" stroke="#59d6a6" stroke-width="2" marker-end="url(#arrow-green-end)" marker-start="url(#arrow-green-start)"/>
+        <text x="590" y="165" font-size="11.5" fill="#59d6a6" font-family="IBM Plex Mono, monospace">③ 웹사이트 접속</text>
+
+        <!-- flow 4: Vercel <-> Supabase (runtime, dashed green) -->
+        <path class="flow-path" d="M547,266 L668,266" fill="none" stroke="#59d6a6" stroke-width="2" marker-end="url(#arrow-green-end)" marker-start="url(#arrow-green-start)"/>
+        <text x="558" y="252" font-size="10.5" fill="#59d6a6" font-family="IBM Plex Mono, monospace">④ DATABASE_URL</text>
+        <text x="558" y="320" font-size="10.5" fill="#9fb9d6">(할 일 데이터 저장·조회)</text>
+      </svg>
+
+      <figcaption>① 코드를 고쳐 GitHub에 올리면 ② Vercel이 자동으로 새 버전을 배포합니다. ③ 사용자가 사이트에 접속할 때마다 ④ Vercel이 <code style="font-family:'IBM Plex Mono',monospace;color:var(--cyan)">DATABASE_URL</code>이라는 접속 정보로 Supabase 데이터베이스에서 할 일 목록을 읽고 씁니다.</figcaption>
+
+      <div class="legend">
+        <span><i class="swatch" style="border-color:#6fd3f2"></i>배포 흐름 — 코드를 바꿔 올릴 때 한 번</span>
+        <span><i class="swatch" style="border-color:#59d6a6; border-top-style:dashed"></i>실행 흐름 — 접속할 때마다 반복</span>
+      </div>
+    </figure>
+  </section>
+
+  <section>
+    <span class="eyebrow">Work Log</span>
+    <h2>작업 기록 (REV.1 – REV.5)</h2>
+    <p class="lede">모두 2026-09-15 하루 동안 순서대로 진행된 작업입니다. 각 항목의 커밋 번호로 실제 코드 변경 이력을 찾아볼 수 있습니다.</p>
+
+    <table class="revlog">
+      <thead>
+        <tr><th>REV</th><th>내용</th><th>커밋</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rev">1</td>
+          <td class="desc">로컬 PC에 Flask 기반 할 일 관리 웹앱(ETNS TODO) 제작 — 추가·수정·삭제·완료 체크, SQLite 저장</td>
+          <td class="hash">(로컬 작업)</td>
+        </tr>
+        <tr>
+          <td class="rev">2</td>
+          <td class="desc">GitHub 신규 저장소 <code style="font-family:inherit">20260915_ETNS_G</code> 생성, 최초 코드 업로드</td>
+          <td class="hash">8d66d9e</td>
+        </tr>
+        <tr>
+          <td class="rev">3</td>
+          <td class="desc">Vercel 신규 프로젝트로 배포 연결 (<code style="font-family:inherit">vercel.json</code> 추가)</td>
+          <td class="hash">262e34c</td>
+        </tr>
+        <tr>
+          <td class="rev">4</td>
+          <td class="desc">배포 후 스타일(CSS) 미적용 문제 확인 및 라우팅 수정</td>
+          <td class="hash">17ee948</td>
+        </tr>
+        <tr>
+          <td class="rev">5</td>
+          <td class="desc">Supabase 신규 프로젝트 <code style="font-family:inherit">20260915_ETNS_S</code> 연동, 데이터 영구 저장으로 전환</td>
+          <td class="hash">475c45b</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <span class="eyebrow">Corrections</span>
+    <h2>진행 중 발견된 문제와 수정 내역</h2>
+    <p class="lede">배포 과정에서 세 가지 문제를 만났고, 그때그때 원인을 찾아 고쳤습니다. 같은 작업을 다시 할 때 참고하세요.</p>
+
+    <div class="redline">
+      <span class="tag">문제 1 · Vercel 프로젝트 이름</span>
+      <p class="fix">Vercel 프로젝트 이름은 소문자만 허용됩니다. <del>20260915_ETNS_V</del> → <ins>20260915_etns_v</ins> 로 수정해 생성했습니다.</p>
+    </div>
+    <div class="redline">
+      <span class="tag">문제 2 · 정적 파일(CSS) 404</span>
+      <p class="fix">최초 <code style="font-family:inherit;color:var(--ink)">vercel.json</code>이 <code style="font-family:inherit;color:var(--ink)">/static</code> 요청을 잘못된 경로로 보내 스타일이 깨졌습니다. 해당 라우트를 지우고 모든 요청을 Flask 앱이 직접 처리하도록 수정 → 정상 표시 확인.</p>
+    </div>
+    <div class="redline">
+      <span class="tag">문제 3 · 데이터가 저장되지 않음</span>
+      <p class="fix">Vercel은 서버리스 구조라 파일(SQLite)이 재배포·재시작 시 초기화됩니다. <code style="font-family:inherit;color:var(--ink)">DATABASE_URL</code> 환경변수로 Supabase(Postgres)에 연결하도록 코드를 수정해 영구 저장으로 전환했습니다.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Reference</span>
+    <h2>주요 접속 정보</h2>
+    <p class="lede">세 서비스의 이름과 위치입니다. 실제 접속 주소는 자유롭게 공유해도 되지만, 비밀번호가 포함된 값은 아래 표에 없습니다 (다음 항목 참고).</p>
+
+    <table class="reftable">
+      <thead>
+        <tr><th>서비스</th><th>이름 / 위치</th><th>비고</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="svc">GitHub</td>
+          <td><code>github.com/kimyeseul120-creator/20260915_ETNS_G</code></td>
+          <td class="note">소스 코드 원본 (Public 저장소, main 브랜치)</td>
+        </tr>
+        <tr>
+          <td class="svc">Vercel</td>
+          <td><code>20260915etnsv-tau.vercel.app</code></td>
+          <td class="note">실제 서비스 접속 주소 (프로젝트명 20260915_etns_v)</td>
+        </tr>
+        <tr>
+          <td class="svc">Supabase</td>
+          <td><code>20260915_ETNS_S</code></td>
+          <td class="note">supabase.com 대시보드 로그인 후 확인, 할 일 데이터 실제 저장 위치</td>
+        </tr>
+        <tr>
+          <td class="svc">로컬 폴더</td>
+          <td><code>...\ETNS_VIBE\ETNS_TODO_APP</code></td>
+          <td class="note">코드를 직접 수정하는 원본 작업 폴더</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <span class="mark">!</span>
+      <p><strong>비밀번호·접속키는 어디에 있나요.</strong> Supabase 데이터베이스 비밀번호가 담긴 접속 문자열(<code style="font-family:'IBM Plex Mono',monospace;color:var(--cyan)">DATABASE_URL</code>)은 이 문서, 코드, 대화 기록 어디에도 남겨두지 않았습니다. Vercel 프로젝트의 <em>Settings → Environment Variables</em>와 로컬 <code style="font-family:'IBM Plex Mono',monospace;color:var(--cyan)">.env</code> 파일(Git에 올라가지 않음)에만 저장되어 있습니다.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Maintenance</span>
+    <h2>앞으로 코드를 수정하려면</h2>
+    <ol class="steps">
+      <li><span class="n">1</span><span>로컬 <code>ETNS_TODO_APP</code> 폴더에서 코드 수정</span></li>
+      <li><span class="n">2</span><span><code>git add -A && git commit -m "수정 내용" && git push</code> 실행</span></li>
+      <li><span class="n">3</span><span>Vercel이 GitHub 변경을 감지해 1~2분 내 자동으로 새 버전 배포</span></li>
+      <li><span class="n">4</span><span>이미 저장된 할 일 데이터는 Supabase에 그대로 남아있으므로 재배포와 무관하게 유지됨</span></li>
+    </ol>
+  </section>
+
+  <footer>
+    <span>작성: Claude (Claude Code) · 확인: Kim Yeseu</span>
+    <span class="status">● 2026-09-15 기준 3개 서비스 연결 정상 확인됨</span>
+  </footer>
+
+</div>

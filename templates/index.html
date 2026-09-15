@@ -9,8 +9,18 @@
 <body>
 <div class="container">
     <header>
-        <h1>✅ ETNS TODO</h1>
-        <p class="subtitle">간단한 할 일 관리 웹앱</p>
+        <div class="header-top">
+            <div>
+                <h1>✅ ETNS TODO</h1>
+                <p class="subtitle">간단한 할 일 관리 웹앱</p>
+            </div>
+            <div class="user-box">
+                <span class="username">{{ username }}님</span>
+                <form action="{{ url_for('logout') }}" method="post">
+                    <button type="submit" class="logout-btn">로그아웃</button>
+                </form>
+            </div>
+        </div>
     </header>
 
     {% with messages = get_flashed_messages() %}

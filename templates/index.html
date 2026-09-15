@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETNS TODO</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>✅ ETNS TODO</h1>
+        <p class="subtitle">간단한 할 일 관리 웹앱</p>
+    </header>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="summary">
+        전체 <strong>{{ total }}</strong>개 · 완료 <strong>{{ done_count }}</strong>개 · 미완료 <strong>{{ total - done_count }}</strong>개
+    </div>
+
+    <form class="add-form" action="{{ url_for('add') }}" method="post">
+        <input type="text" name="title" placeholder="할 일을 입력하세요" autocomplete="off" required>
+        <button type="submit">추가</button>
+    </form>
+
+    <ul class="todo-list">
+        {% for todo in todos %}
+        <li class="todo-item {{ 'done' if todo['done'] else '' }}">
+            <form class="toggle-form" action="{{ url_for('toggle', todo_id=todo['id']) }}" method="post">
+                <button type="submit" class="check-btn" title="완료/미완료 전환">
+                    {{ '☑' if todo['done'] else '☐' }}
+                </button>
+            </form>
+
+            <span class="todo-title">{{ todo['title'] }}</span>
+            <span class="todo-date">{{ todo['created_at'] }}</span>
+
+            <form class="edit-form" action="{{ url_for('edit', todo_id=todo['id']) }}" method="post">
+                <input type="text" name="title" value="{{ todo['title'] }}" class="edit-input">
+                <button type="submit" class="edit-btn">수정</button>
+            </form>
+
+            <form class="delete-form" action="{{ url_for('delete', todo_id=todo['id']) }}" method="post">
+                <button type="submit" class="delete-btn" onclick="return confirm('삭제하시겠습니까?');">삭제</button>
+            </form>
+        </li>
+        {% else %}
+        <li class="empty">등록된 할 일이 없습니다. 위에서 새 할 일을 추가해보세요!</li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>

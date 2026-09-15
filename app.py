@@ -3,6 +3,7 @@ ETNS TODO APP
 간단한 할 일 관리 웹앱 (Flask + SQLite)
 """
 
+import os
 import sqlite3
 from datetime import datetime
 from pathlib import Path
@@ -10,7 +11,13 @@ from pathlib import Path
 from flask import Flask, render_template, request, redirect, url_for, flash
 
 BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = BASE_DIR / "todo.db"
+
+# Vercel의 서버리스 환경은 프로젝트 폴더가 읽기 전용이고, /tmp만 쓰기가 가능합니다.
+# (단, /tmp는 요청마다 초기화될 수 있어 Vercel 배포본은 데이터가 영구 저장되지 않습니다.)
+if os.environ.get("VERCEL"):
+    DB_PATH = Path("/tmp/todo.db")
+else:
+    DB_PATH = BASE_DIR / "todo.db"
 
 app = Flask(__name__)
 app.secret_key = "etns-todo-secret-key"  # 실습용 시크릿 키 (운영 배포 시 반드시 변경)
@@ -105,6 +112,9 @@ def edit(todo_id):
     return redirect(url_for("index"))
 
 
+# Vercel 등 서버리스 환경에서는 __main__ 블록이 실행되지 않고 이 모듈이 바로
+# import되어 app(WSGI 객체)만 사용되므로, 모듈 로드 시점에 DB를 초기화합니다.
+init_db()
+
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True, host="127.0.0.1", port=5000)
